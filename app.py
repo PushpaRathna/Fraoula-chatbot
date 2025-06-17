@@ -119,7 +119,7 @@ def keyword_search(query, chunks, top_k=3):
     return ranked[:top_k] if ranked else []
 
 # --- Tabs ---
-tab1, tab2 = st.tabs(["🛠️ Dev", "🤖 Chatbot"])
+tab1, tab2 = st.tabs(["Dev", "Chatbot"])
 
 # --- Dev Tab ---
 with tab1:
@@ -133,9 +133,9 @@ with tab1:
         if st.button("Login"):
             if password == DEV_PASSWORD:
                 st.session_state.dev_auth = True
-                st.success("✅ Access granted")
+                st.success("Access granted")
             else:
-                st.error("❌ Incorrect password.")
+                st.error("Incorrect password.")
     else:
         uploaded_file = st.file_uploader("Upload CSV, JSON, TXT, or Excel", type=["csv", "json", "txt", "xlsx"])
         if uploaded_file:
@@ -180,19 +180,19 @@ with tab1:
                         inserted += 1
                         existing_cins.add(row["CIN"])
                     conn.commit()
-                    st.success(f"✅ Uploaded {inserted} new companies to database.")
+                    st.success(f"Uploaded {inserted} new companies to database.")
 
                 if df_preview is not None:
                     st.dataframe(df_preview)
                 else:
                     st.text_area("Preview", raw_text, height=200)
             except Exception as e:
-                st.error(f"❌ Failed to read file: {e}")
+                st.error(f"Failed to read file: {e}")
 
         if os.path.exists(DATA_STORE):
             with open(DATA_STORE, "r") as f:
                 data_log = json.load(f)
-            st.download_button("⬇️ Download Upload Log (JSON)",
+            st.download_button(" Download Upload Log (JSON)",
                                data=json.dumps(data_log, indent=2),
                                file_name="upload_log.json",
                                mime="application/json")
@@ -231,7 +231,7 @@ with tab2:
                 res.raise_for_status()
                 reply = res.json()["choices"][0]["message"]["content"]
             except Exception as e:
-                reply = f"❌ Error: {e}"
+                reply = f"Error: {e}"
 
             st.session_state.chat_history.append({"role": "assistant", "content": reply})
             st.rerun()
