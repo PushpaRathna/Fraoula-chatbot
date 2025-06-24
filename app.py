@@ -59,17 +59,26 @@ st.markdown(f"""
         margin: 8px 0;
         text-align: left;
     }}
-    /* Make tab labels visible */
+
+    /* --- FIX TABS VISIBILITY --- */
     [data-testid="stTabs"] > div > button {{
         color: white !important;
-        background-color: #2a004f;
+        background-color: #2a004f !important;
+        border: none;
         border-radius: 8px 8px 0 0;
-        padding: 8px 16px;
-        font-weight: 500;
+        padding: 10px 16px;
+        margin-right: 4px;
+        transition: all 0.3s ease;
+        opacity: 1 !important;
     }}
     [data-testid="stTabs"] > div > button[aria-selected="true"] {{
+        color: #ffffff !important;
+        background-color: #3b0070 !important;
         border-bottom: 3px solid {SECONDARY_COLOR};
         font-weight: bold;
+    }}
+    [data-testid="stTabs"] > div > button:hover {{
+        background-color: #4a007f !important;
     }}
     </style>
 """, unsafe_allow_html=True)
