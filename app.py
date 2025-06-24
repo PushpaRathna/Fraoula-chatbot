@@ -59,6 +59,18 @@ st.markdown(f"""
         margin: 8px 0;
         text-align: left;
     }}
+    /* Make tab labels visible */
+    [data-testid="stTabs"] > div > button {{
+        color: white !important;
+        background-color: #2a004f;
+        border-radius: 8px 8px 0 0;
+        padding: 8px 16px;
+        font-weight: 500;
+    }}
+    [data-testid="stTabs"] > div > button[aria-selected="true"] {{
+        border-bottom: 3px solid {SECONDARY_COLOR};
+        font-weight: bold;
+    }}
     </style>
 """, unsafe_allow_html=True)
 
@@ -159,7 +171,6 @@ with tab1:
                 chunks = chunk_text(raw_text)
                 save_data(uploaded_file.name, chunks)
 
-                # Save to DB if company structure detected
                 if df_preview is not None and "cin" in [c.lower() for c in df_preview.columns]:
                     df = normalize_columns(df_preview)
                     df['CIN'] = df['CIN'].astype(str).str.strip().str.upper()
