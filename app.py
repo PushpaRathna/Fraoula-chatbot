@@ -14,8 +14,13 @@ DATA_STORE = "knowledge_data.json"
 DEV_PASSWORD = "fraoula123"
 BATCH_SIZE = 1000
 
-# --- API Key (add yours in .streamlit/secrets.toml) ---
-API_URL = "https://openrouter.ai/api/v1/chat/completions"
+# --- API Key Setup ---
+try:
+    API_KEY = st.secrets["openrouter"]["api_key"]
+except Exception:
+    API_KEY = "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"  # Replace this for local testing
+
+API_URL = "https://api.openrouter.ai/v1/chat/completions"
 HEADERS = {
     "Authorization": f"Bearer {API_KEY}",
     "Content-Type": "application/json"
@@ -58,8 +63,6 @@ st.markdown(f"""
         margin: 8px 0;
         text-align: left;
     }}
-
-    /* --- FIX TABS VISIBILITY --- */
     [data-testid="stTabs"] > div > button {{
         color: white !important;
         background-color: #2a004f !important;
@@ -211,7 +214,7 @@ with tab1:
         if os.path.exists(DATA_STORE):
             with open(DATA_STORE, "r") as f:
                 data_log = json.load(f)
-            st.download_button(" Download Upload Log (JSON)",
+            st.download_button("Download Upload Log (JSON)",
                                data=json.dumps(data_log, indent=2),
                                file_name="upload_log.json",
                                mime="application/json")
