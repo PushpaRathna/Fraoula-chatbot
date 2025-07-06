@@ -15,7 +15,7 @@ DEV_PASSWORD = "fraoula123"
 BATCH_SIZE = 1000
 
 # --- API Key (add yours in .streamlit/secrets.toml) ---
-API_URL = "https://api.openrouter.ai/v1/chat/completions"
+API_URL = "https://openrouter.ai/api/v1/chat/completions"
 HEADERS = {
     "Authorization": f"Bearer {API_KEY}",
     "Content-Type": "application/json"
