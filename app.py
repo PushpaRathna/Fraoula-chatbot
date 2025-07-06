@@ -14,13 +14,9 @@ DATA_STORE = "knowledge_data.json"
 DEV_PASSWORD = "fraoula123"
 BATCH_SIZE = 1000
 
-# --- API Key Setup ---
-try:
-    API_KEY = st.secrets["openrouter"]["api_key"]
-except Exception:
-    API_KEY = "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"  # Replace this for local testing
-
-API_URL = "https://api.openrouter.ai/v1/chat/completions"
+# --- API Key (add yours in .streamlit/secrets.toml) ---
+API_KEY = st.secrets["openrouter"]["api_key"]
+API_URL = "https://openrouter.ai/api/v1/chat/completions"
 HEADERS = {
     "Authorization": f"Bearer {API_KEY}",
     "Content-Type": "application/json"
@@ -62,25 +58,6 @@ st.markdown(f"""
         border-radius: 12px 12px 12px 0;
         margin: 8px 0;
         text-align: left;
-    }}
-    [data-testid="stTabs"] > div > button {{
-        color: white !important;
-        background-color: #2a004f !important;
-        border: none;
-        border-radius: 8px 8px 0 0;
-        padding: 10px 16px;
-        margin-right: 4px;
-        transition: all 0.3s ease;
-        opacity: 1 !important;
-    }}
-    [data-testid="stTabs"] > div > button[aria-selected="true"] {{
-        color: #ffffff !important;
-        background-color: #3b0070 !important;
-        border-bottom: 3px solid {SECONDARY_COLOR};
-        font-weight: bold;
-    }}
-    [data-testid="stTabs"] > div > button:hover {{
-        background-color: #4a007f !important;
     }}
     </style>
 """, unsafe_allow_html=True)
@@ -142,7 +119,7 @@ def keyword_search(query, chunks, top_k=3):
     return ranked[:top_k] if ranked else []
 
 # --- Tabs ---
-tab1, tab2 = st.tabs(["Dev", "Chatbot"])
+tab1, tab2 = st.tabs(["🛠️ Dev", "🤖 Chatbot"])
 
 # --- Dev Tab ---
 with tab1:
@@ -156,9 +133,9 @@ with tab1:
         if st.button("Login"):
             if password == DEV_PASSWORD:
                 st.session_state.dev_auth = True
-                st.success("Access granted")
+                st.success("✅ Access granted")
             else:
-                st.error("Incorrect password.")
+                st.error("❌ Incorrect password.")
     else:
         uploaded_file = st.file_uploader("Upload CSV, JSON, TXT, or Excel", type=["csv", "json", "txt", "xlsx"])
         if uploaded_file:
@@ -182,6 +159,7 @@ with tab1:
                 chunks = chunk_text(raw_text)
                 save_data(uploaded_file.name, chunks)
 
+                # Save to DB if company structure detected
                 if df_preview is not None and "cin" in [c.lower() for c in df_preview.columns]:
                     df = normalize_columns(df_preview)
                     df['CIN'] = df['CIN'].astype(str).str.strip().str.upper()
@@ -202,19 +180,19 @@ with tab1:
                         inserted += 1
                         existing_cins.add(row["CIN"])
                     conn.commit()
-                    st.success(f"Uploaded {inserted} new companies to database.")
+                    st.success(f"✅ Uploaded {inserted} new companies to database.")
 
                 if df_preview is not None:
                     st.dataframe(df_preview)
                 else:
                     st.text_area("Preview", raw_text, height=200)
             except Exception as e:
-                st.error(f"Failed to read file: {e}")
+                st.error(f"❌ Failed to read file: {e}")
 
         if os.path.exists(DATA_STORE):
             with open(DATA_STORE, "r") as f:
                 data_log = json.load(f)
-            st.download_button("Download Upload Log (JSON)",
+            st.download_button("⬇️ Download Upload Log (JSON)",
                                data=json.dumps(data_log, indent=2),
                                file_name="upload_log.json",
                                mime="application/json")
@@ -253,7 +231,7 @@ with tab2:
                 res.raise_for_status()
                 reply = res.json()["choices"][0]["message"]["content"]
             except Exception as e:
-                reply = f"Error: {e}"
+                reply = f"❌ Error: {e}"
 
             st.session_state.chat_history.append({"role": "assistant", "content": reply})
             st.rerun()
